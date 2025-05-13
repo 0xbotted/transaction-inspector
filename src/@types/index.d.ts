@@ -1,3 +1,6 @@
+import { TransactionReceipt } from "ethers";
+import { TransactionResponse } from "ethers";
+
 export interface ChainProps {
   name: string;
   chainId: number;
@@ -40,3 +43,27 @@ export type ChainKey =
   | "SCROLL"
   | "ETHEREUM_SEPOLIA"
   | "SOMNIA_TESTNET";
+
+type txInfo = TransactionResponse | null;
+
+interface TxDataResponse {
+  tx: txInfo;
+  receipt: TransactionReceipt | null;
+  chain: ChainProps;
+}
+
+// Function signatures from 4byte.directory
+export interface FunctionSignature {
+  name: string;
+  text: string;
+  bytes: string;
+}
+
+export interface ITxInfo {
+  tx: TransactionResponse;
+  receipt: TransactionReceipt | null;
+  chain: ChainProps;
+  selector: string;
+  args: string[];
+  funcSigs: string[];
+}
