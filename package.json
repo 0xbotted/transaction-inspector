@@ -2,6 +2,7 @@
   "name": "transaction-inspector",
   "version": "0.1.0",
   "private": true,
+  "author": "noobest <0xbotted@gmail.com>",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

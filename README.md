@@ -1,8 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Transaction Inspector
+
+Decode and explore Ethereum and EVM-compatible transaction calldata, logs, and events across multiple chains.  
+Built with [Next.js](https://nextjs.org) and [Ethers.js](https://docs.ethers.org/).
+
+---
+
+## Features
+
+- **Function Signature Matching** – Parses function selectors and shows matching signature(s)
+- **Argument Decoding** – Displays calldata arguments clearly by type
+- **Log & Event Decoding** – Recognizes common event topics (e.g. Transfer, Approval)
+- **Multi-chain Support** – Decode transactions across several EVM-compatible chains
+- **Built with Modern Stack** – Next.js App Router, Tailwind CSS, Geist fonts, and more
+- **Ready for Vercel Deployment**
+
+---
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +42,63 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+- `app/` – App Router entrypoints (layout, pages, metadata)
+- `components/` – UI components like `CalldataDetails`, `LogViewer`, etc.
+- `lib/` – Helper functions (decoding, formatting, etc.)
+- `types/` – Shared TypeScript types
+- `styles/` – Global styles and Tailwind config
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Deploy instantly to [Vercel](https://vercel.com/new) for free:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+Or follow the [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying).
+
+---
+
+## Built By
+
+Created by [`0xbotted`](mailto:0xbotted@gmail.com)  
+Open source contributions welcome!
+
+---
+
+## Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Ethers.js Documentation](https://docs.ethers.org/)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [Geist Font](https://vercel.com/font)
+
+---
+
+## 📄 License
+
+MIT
+
+## TODO
+
+- [ ] Add input validation and fallback error handling
+- [ ] Integrate contract metadata (name, symbol, decimals where relevant)
+- [ ] Support multiple call types (delegatecall, create, staticcall)
+- [ ] Add search history using localStorage
+- [ ] Copy/share permalink for decoded transaction
+- [ ] Add dark mode toggle (currently default only)
+- [ ] Add multi-chain routing support (`/[chainId]/tx/[txHash]`)
+- [ ] Display contract address (CA) info (`/[chainId]/address/[contractAddress]`)
+- [ ] Fetch verified contract ABIs from Sourcify or Blockscout
+- [ ] Decode function calls across supported chains
+- [ ] Parse and display contract metadata (ERC20, ERC721, ERC1155)
+- [ ] Enhance UI for logs and event inspection
+- [ ] Add search functionality for transaction hashes and addresses
+- [ ] Optional: Add support for ENS / Lens / Farcaster names

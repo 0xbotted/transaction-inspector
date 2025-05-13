@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Transaction Inspector",
     description:
-      "Decode any EVM-Compatiable Chain's transaction — calldata, logs, selectors, and functions — all in one UI.",
+      "Decode any EVM-Compatiable Chain's transaction calldata, logs, selectors, and functions all in one UI.",
     url: "https://transaction-inspector.vercel.app",
     siteName: "Transaction Inspector",
     locale: "en_US",
