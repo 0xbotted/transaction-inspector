@@ -15,13 +15,22 @@ export const useTxInspector = () => {
   const [balances, setBalances] = useState<Record<string, string>>({});
   const [showRaw, setShowRaw] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const inspectTx = async () => {
+    setError(null);
     try {
       setTxInfo(null);
       setBalances({});
+
+      if (!hash || !hash.startsWith("0x") || hash.length !== 66) {
+        throw new Error("Invalid transaction hash format.");
+      }
+
       const result = await fetchTxData(hash, chainKey);
-      if (!result || !result.tx || !result.receipt) return;
+      if (!result || !result.tx || !result.receipt) {
+        throw new Error("Transaction not found or failed to fetch.");
+      }
 
       const { tx, receipt, chain } = result;
       const selector = getSelector(tx.data);
@@ -29,8 +38,9 @@ export const useTxInspector = () => {
       const funcSigs = await lookupSelector(selector);
 
       setTxInfo({ tx, receipt, selector, args, funcSigs, chain });
-    } catch (err) {
-      console.error("Error inspecting tx:", err);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Unexpected error occurred during inspection.";
+      setError(errorMessage);
     }
   };
 
@@ -52,8 +62,12 @@ export const useTxInspector = () => {
   };
 
   const copyToClipboard = async (text: string) => {
-    await navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Copied to clipboard!");
+    } catch (err) {
+      console.error("Clipboard copy failed:", err);
+    }
   };
 
   return {
@@ -65,10 +79,11 @@ export const useTxInspector = () => {
     balances,
     showRaw,
     showLogs,
+    error,
     inspectTx,
     getBalance,
     copyToClipboard,
-    toggleShowRaw: () => setShowRaw(prev => !prev),
-    toggleShowLogs: () => setShowLogs(prev => !prev),
+    toggleShowRaw: () => setShowRaw((prev) => !prev),
+    toggleShowLogs: () => setShowLogs((prev) => !prev),
   };
 };

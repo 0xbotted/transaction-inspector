@@ -23,11 +23,18 @@ export default function TxInspectorClient() {
     copyToClipboard,
     toggleShowRaw,
     toggleShowLogs,
+    error,
   } = useTxInspector();
 
   return (
     <>
       <TxForm hash={hash} setHash={setHash} chainKey={chainKey} setChainKey={setChainKey} onSubmit={inspectTx} />
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-100 rounded-lg shadow">
+          {error}
+        </div>
+      )}
 
       {txInfo && (
         <div className="mt-10 space-y-6">
