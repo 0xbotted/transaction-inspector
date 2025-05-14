@@ -1,5 +1,6 @@
 import type { TxDataResponse } from "@/@types";
 import { JSX } from "react";
+
 type Props = {
   txInfo: TxDataResponse;
   balances: Record<string, string>;
@@ -20,7 +21,7 @@ export default function TxInfo({ txInfo, balances, getBalance }: Props) {
   const InfoRow = ({ label, value }: { label: string; value: string | JSX.Element | null | undefined }) => (
     <div className="flex justify-between items-center py-1 text-sm">
       <span className="text-gray-600 dark:text-gray-400">{label}</span>
-      <span className="font-mono text-gray-900 dark:text-gray-100 text-right">{value ?? "-"}</span>
+      <span className="font-mono text-gray-900 dark:text-gray-100 text-right break-all">{value ?? "-"}</span>
     </div>
   );
 
@@ -35,11 +36,32 @@ export default function TxInfo({ txInfo, balances, getBalance }: Props) {
   const tokenSymbol = chain.tokenSymbol ?? "";
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow ring-1 ring-gray-200 dark:ring-gray-700 space-y-2">
-      <h2 className="text-xl font-semibold mb-2">Transaction Info</h2>
+    <div className="bg-white/30 dark:bg-white/5 backdrop-blur-lg ring-1 ring-white/40 dark:ring-white/10 shadow-xl p-6 rounded-2xl space-y-4 transition-all">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">📄 Transaction Info</h2>
 
       <InfoRow label="Chain" value={chain.name} />
-      <InfoRow label="Status" value={receipt ? (receipt.status === 1 ? "✅ Success" : "❌ Failed") : "Pending"} />
+
+      <InfoRow
+        label="Status"
+        value={
+          receipt ? (
+            receipt.status === 1 ? (
+              <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded">
+                ✅ Success
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 rounded">
+                ❌ Failed
+              </span>
+            )
+          ) : (
+            <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 rounded">
+              ⏳ Pending
+            </span>
+          )
+        }
+      />
+
       <InfoRow
         label="From"
         value={
@@ -52,8 +74,10 @@ export default function TxInfo({ txInfo, balances, getBalance }: Props) {
         }
       />
       {fromBalance && <InfoRow label="From Balance" value={fromBalance} />}
+
       <InfoRow label="To" value={to ?? "Contract Creation"} />
       {to && toBalance && <InfoRow label="To Balance" value={toBalance} />}
+
       <InfoRow label="Nonce" value={tx.nonce?.toString()} />
       <InfoRow label="Gas Used" value={gasUsed ? gasUsed.toLocaleString() : undefined} />
       <InfoRow label="Tx Fee" value={feeEth !== null ? `${feeEth.toFixed(6)} ${tokenSymbol}` : undefined} />

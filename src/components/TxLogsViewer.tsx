@@ -16,33 +16,31 @@ const TxLogsViewer = ({ logs, show }: Props) => {
   if (!show || !logs?.length) return null;
 
   return (
-    <section className="mt-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-lg shadow space-y-4">
-      <h2 className="font-semibold text-lg">Transaction Logs / Events</h2>
+    <section className="mt-8 bg-white/30 dark:bg-white/5 backdrop-blur-md ring-1 ring-white/20 dark:ring-white/10 p-5 rounded-2xl shadow-lg space-y-4">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">🧾 Transaction Logs / Events</h2>
 
       {logs.map((log, idx) => (
         <div
           key={`${log.address}-${idx}`}
-          className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs font-mono overflow-auto space-y-2"
+          className="bg-gray-100/70 dark:bg-gray-800/50 backdrop-blur rounded-xl p-4 font-mono text-xs space-y-2 overflow-x-auto"
         >
-          <p>
-            <strong>Address:</strong> {log.address}
-          </p>
+          <p><strong>Address:</strong> {log.address}</p>
 
           <div>
             <strong>Topics:</strong>
             <ul className="ml-4 list-disc">
               {log.topics.map((topic, i) => (
                 <li key={i}>
-                  {KNOWN_EVENTS[topic] && <span className="text-green-500">[{KNOWN_EVENTS[topic]}] </span>}
+                  {KNOWN_EVENTS[topic] && (
+                    <span className="text-green-500">[{KNOWN_EVENTS[topic]}] </span>
+                  )}
                   {topic}
                 </li>
               ))}
             </ul>
           </div>
 
-          <p>
-            <strong>Data:</strong> {log.data}
-          </p>
+          <p><strong>Data:</strong> {log.data}</p>
         </div>
       ))}
     </section>

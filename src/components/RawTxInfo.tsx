@@ -1,5 +1,5 @@
-import React from "react";
 import type { ITxInfo } from "@/@types";
+import React from "react";
 
 interface Props {
   txInfo: ITxInfo;
@@ -10,8 +10,8 @@ export const RawTxInfo: React.FC<Props> = ({ txInfo, show }) => {
   if (!show) return null;
 
   return (
-    <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded text-xs overflow-auto max-h-[500px] font-mono whitespace-pre-wrap">
-      <pre>{JSON.stringify(txInfo, null, 2)}</pre>
+    <div className="mt-6 bg-white/20 dark:bg-white/5 backdrop-blur rounded-2xl p-4 max-h-[500px] overflow-auto shadow ring-1 ring-white/20 dark:ring-white/10 text-xs font-mono whitespace-pre-wrap">
+      <pre className="text-gray-900 dark:text-gray-100">{JSON.stringify(txInfo, null, 2)}</pre>
     </div>
   );
 };
