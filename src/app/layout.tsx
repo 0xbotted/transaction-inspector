@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CHAINS } from "@/lib/chains";
+import { CONFIG } from "@/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,13 +17,13 @@ const geistMono = Geist_Mono({
 const chains = Object.values(CHAINS).map((x) => x.name);
 
 export const metadata: Metadata = {
-  title: "Transaction Inspector",
+  title: CONFIG.APP_NAME,
   description:
     "Decode and explore transaction calldata, logs, events, and function signatures across multiple EVM-compatible chains.",
   keywords: [
     "Ethereum",
     "Calldata Decoder",
-    "Transaction Inspector",
+    CONFIG.APP_NAME,
     "EVM",
     "Logs Viewer",
     "Function Selector",
@@ -32,19 +33,19 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "noobest", url: "mailto:0xbotted@gmail.com" }],
   creator: "0xbotted",
-  metadataBase: new URL("https://transaction-inspector.vercel.app"),
+  metadataBase: new URL(CONFIG.BASE_URL),
   openGraph: {
-    title: "Transaction Inspector",
+    title: CONFIG.APP_NAME,
     description:
       "Decode any EVM-Compatiable Chain's transaction calldata, logs, selectors, and functions all in one UI.",
-    url: "https://transaction-inspector.vercel.app",
-    siteName: "Transaction Inspector",
+    url: CONFIG.BASE_URL,
+    siteName: CONFIG.APP_NAME,
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Transaction Inspector",
+    title: CONFIG.APP_NAME,
     description: "Explore and debug EVM transactions by decoding calldata, logs, and more.",
     creator: "@0xnovato",
   },
