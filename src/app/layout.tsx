@@ -48,6 +48,9 @@ export const metadata: Metadata = {
     description: "Explore and debug EVM transactions by decoding calldata, logs, and more.",
     creator: "@0xnovato",
   },
+  other: {
+    "google-site-verification": "HxozCDp6Wy3gCriMAJhVjBihNCAOGCIvWrdY-HVorMM",
+  },
 };
 
 export default function RootLayout({
@@ -57,9 +60,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="google-site-verification" content="HxozCDp6Wy3gCriMAJhVjBihNCAOGCIvWrdY-HVorMM" />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
   );
