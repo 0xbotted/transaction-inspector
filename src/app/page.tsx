@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { fetchTxData } from "@/lib/fetchTx";
 import { getSelector, splitArgs } from "@/lib/decodeCalldata";
