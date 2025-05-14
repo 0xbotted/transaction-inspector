@@ -1,5 +1,19 @@
 import type { TxDataResponse } from "@/@types";
-import { JSX } from "react";
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  RefreshCw,
+  ArrowLeftRight,
+  Wallet,
+  Hash,
+  Flame,
+  Coins,
+  Link,
+  ChevronRight,
+} from "lucide-react";
+import { useState, JSX } from "react";
+import { motion } from "framer-motion";
 
 type Props = {
   txInfo: TxDataResponse;
@@ -9,19 +23,50 @@ type Props = {
 
 export default function TxInfo({ txInfo, balances, getBalance }: Props) {
   const { tx, receipt, chain } = txInfo;
+  const [isLoadingBalance, setIsLoadingBalance] = useState<string | null>(null);
 
   if (!tx || !chain) {
     return (
-      <div className="p-4 rounded bg-yellow-50 text-yellow-800 border border-yellow-300">
-        Missing transaction or chain data.
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="p-4 rounded-lg bg-yellow-100 text-yellow-800 border border-yellow-300 dark:bg-yellow-900 dark:text-yellow-200 flex items-start gap-3"
+        role="alert"
+      >
+        <XCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+        <div>
+          <h3 className="font-medium">Missing Data</h3>
+          <p className="text-sm">Transaction or chain data not available</p>
+        </div>
+      </motion.div>
     );
   }
 
-  const InfoRow = ({ label, value }: { label: string; value: string | JSX.Element | null | undefined }) => (
-    <div className="flex justify-between items-center py-1 text-sm">
-      <span className="text-gray-600 dark:text-gray-400">{label}</span>
-      <span className="font-mono text-gray-900 dark:text-gray-100 text-right break-all">{value ?? "-"}</span>
+  const InfoRow = ({
+    label,
+    value,
+    isMono = true,
+    icon,
+    isLast = false,
+  }: {
+    label: string;
+    value: string | JSX.Element | null | undefined;
+    isMono?: boolean;
+    icon?: JSX.Element;
+    isLast?: boolean;
+  }) => (
+    <div
+      className={`flex items-center justify-between gap-4 py-3 ${
+        !isLast ? "border-b border-gray-200 dark:border-gray-700" : ""
+      }`}
+    >
+      <div className="flex items-center gap-3 text-gray-600 dark:text-gray-400 w-2/5">
+        {icon}
+        <span className="font-medium">{label}</span>
+      </div>
+      <span className={`text-right break-all ${isMono ? "font-mono" : ""} text-gray-900 dark:text-gray-100 w-3/5`}>
+        {value ?? <span className="text-gray-400 italic">Not available</span>}
+      </span>
     </div>
   );
 
@@ -35,52 +80,137 @@ export default function TxInfo({ txInfo, balances, getBalance }: Props) {
 
   const tokenSymbol = chain.tokenSymbol ?? "";
 
+  const handleGetBalance = async (address: string) => {
+    setIsLoadingBalance(address);
+    try {
+      await getBalance(address);
+    } finally {
+      setIsLoadingBalance(null);
+    }
+  };
+
   return (
-    <div className="bg-white/30 dark:bg-white/5 backdrop-blur-lg ring-1 ring-white/40 dark:ring-white/10 shadow-xl p-6 rounded-2xl space-y-4 transition-all">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">📄 Transaction Info</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white dark:bg-gray-800/95 border border-gray-200 dark:border-gray-700 shadow-lg rounded-xl overflow-hidden"
+    >
+      <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
+          <ArrowLeftRight className="h-5 w-5 text-blue-500" />
+          Transaction Details
+        </h2>
+      </div>
 
-      <InfoRow label="Chain" value={chain.name} />
+      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="p-5 space-y-3">
+          <InfoRow
+            label="Network"
+            value={chain.name}
+            isMono={false}
+            icon={<Link className="h-4 w-4 text-gray-500" />}
+          />
 
-      <InfoRow
-        label="Status"
-        value={
-          receipt ? (
-            receipt.status === 1 ? (
-              <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded">
-                ✅ Success
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 rounded">
-                ❌ Failed
-              </span>
-            )
-          ) : (
-            <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 rounded">
-              ⏳ Pending
-            </span>
-          )
-        }
-      />
+          <InfoRow
+            label="Status"
+            value={
+              receipt ? (
+                receipt.status === 1 ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    Success
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                    <XCircle className="h-3.5 w-3.5" />
+                    Failed
+                  </span>
+                )
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                  <Clock className="h-3.5 w-3.5" />
+                  Pending
+                </span>
+              )
+            }
+            isMono={false}
+            icon={<ChevronRight className="h-4 w-4 text-gray-500" />}
+          />
+        </div>
 
-      <InfoRow
-        label="From"
-        value={
-          <button
-            onClick={() => getBalance(tx.from)}
-            className="underline underline-offset-2 hover:text-blue-500 transition"
-          >
-            {tx.from}
-          </button>
-        }
-      />
-      {fromBalance && <InfoRow label="From Balance" value={fromBalance} />}
+        <div className="p-5 space-y-3">
+          <InfoRow
+            label="From Address"
+            value={
+              <button
+                onClick={() => handleGetBalance(tx.from)}
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
+                disabled={isLoadingBalance === tx.from}
+              >
+                {isLoadingBalance === tx.from ? (
+                  <RefreshCw className="h-3.5 w-3.5 inline mr-2 animate-spin" />
+                ) : (
+                  <Wallet className="h-3.5 w-3.5 inline mr-2" />
+                )}
+                <span className="truncate max-w-[180px]">{tx.from}</span>
+              </button>
+            }
+            icon={<ChevronRight className="h-4 w-4 text-gray-500" />}
+          />
+          {fromBalance && (
+            <InfoRow
+              label="From Balance"
+              value={`${fromBalance} ${tokenSymbol}`}
+              icon={<Coins className="h-4 w-4 text-gray-500" />}
+            />
+          )}
 
-      <InfoRow label="To" value={to ?? "Contract Creation"} />
-      {to && toBalance && <InfoRow label="To Balance" value={toBalance} />}
+          <InfoRow
+            label="To Address"
+            value={
+              to ? (
+                <button
+                  onClick={() => handleGetBalance(to)}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
+                  disabled={isLoadingBalance === to}
+                >
+                  {isLoadingBalance === to ? (
+                    <RefreshCw className="h-3.5 w-3.5 inline mr-2 animate-spin" />
+                  ) : (
+                    <Wallet className="h-3.5 w-3.5 inline mr-2" />
+                  )}
+                  <span className="truncate max-w-[180px]">{to}</span>
+                </button>
+              ) : (
+                <span className="text-gray-500 italic">Contract Creation</span>
+              )
+            }
+            icon={<ChevronRight className="h-4 w-4 text-gray-500" />}
+          />
+          {to && toBalance && (
+            <InfoRow
+              label="To Balance"
+              value={`${toBalance} ${tokenSymbol}`}
+              icon={<Coins className="h-4 w-4 text-gray-500" />}
+            />
+          )}
+        </div>
 
-      <InfoRow label="Nonce" value={tx.nonce?.toString()} />
-      <InfoRow label="Gas Used" value={gasUsed ? gasUsed.toLocaleString() : undefined} />
-      <InfoRow label="Tx Fee" value={feeEth !== null ? `${feeEth.toFixed(6)} ${tokenSymbol}` : undefined} />
-    </div>
+        <div className="p-5 space-y-3">
+          <InfoRow label="Nonce" value={tx.nonce?.toString()} icon={<Hash className="h-4 w-4 text-gray-500" />} />
+          <InfoRow
+            label="Gas Used"
+            value={gasUsed ? gasUsed.toLocaleString() : undefined}
+            icon={<Flame className="h-4 w-4 text-gray-500" />}
+          />
+          <InfoRow
+            label="Transaction Fee"
+            value={feeEth !== null ? `${feeEth.toFixed(6)} ${tokenSymbol}` : undefined}
+            icon={<Coins className="h-4 w-4 text-gray-500" />}
+            isLast={true}
+          />
+        </div>
+      </div>
+    </motion.div>
   );
 }

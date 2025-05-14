@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { fetchTxData } from "@/lib/fetchTx";
@@ -16,10 +16,12 @@ export const useTxInspector = () => {
   const [showRaw, setShowRaw] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const inspectTx = async () => {
     setError(null);
     try {
+      setIsLoading(true);
       setTxInfo(null);
       setBalances({});
 
@@ -41,6 +43,8 @@ export const useTxInspector = () => {
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Unexpected error occurred during inspection.";
       setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,7 +58,7 @@ export const useTxInspector = () => {
 
       setBalances((prev) => ({
         ...prev,
-        [address]: `${ethers.formatEther(balance)} ${CHAINS[chainKey]?.tokenSymbol ?? ""}`,
+        [address]: ethers.formatEther(balance),
       }));
     } catch (err) {
       console.error(`Failed to fetch balance for ${address}:`, err);
@@ -83,6 +87,7 @@ export const useTxInspector = () => {
     inspectTx,
     getBalance,
     copyToClipboard,
+    isLoading,
     toggleShowRaw: () => setShowRaw((prev) => !prev),
     toggleShowLogs: () => setShowLogs((prev) => !prev),
   };
