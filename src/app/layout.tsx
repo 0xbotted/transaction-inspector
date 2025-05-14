@@ -48,8 +48,8 @@ export const metadata: Metadata = {
     description: "Explore and debug EVM transactions by decoding calldata, logs, and more.",
     creator: "@0xnovato",
   },
-  other: {
-    "google-site-verification": "HxozCDp6Wy3gCriMAJhVjBihNCAOGCIvWrdY-HVorMM",
+  verification: {
+    google: "HxozCDp6Wy3gCriMAJhVjBihNCAOGCIvWrdY-HVorMM",
   },
 };
 
