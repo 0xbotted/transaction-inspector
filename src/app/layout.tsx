@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: CONFIG.APP_NAME,
     description: "Explore and debug EVM transactions by decoding calldata, logs, and more.",
-    creator: "@0xnovato",
+    creator: "@0xbotted",
   },
   verification: {
     google: "HxozCDp6Wy3gCriMAJhVjBihNCAOGCIvWrdY-HVorMM",
@@ -61,6 +61,9 @@ export const metadata: Metadata = {
       follow: true,
       noimageindex: false,
     },
+  },
+  alternates: {
+    canonical: CONFIG.BASE_URL,
   },
 };
 
