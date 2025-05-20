@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState, JSX } from "react";
 import { motion } from "framer-motion";
+import { knownEvents } from "@/lib/decodeLogs";
 
 type Props = {
   txInfo: TxDataResponse;
@@ -195,6 +196,94 @@ export default function TxInfo({ txInfo, balances, getBalance }: Props) {
             />
           )}
         </div>
+        {receipt?.logs && receipt?.logs?.length > 0 && (
+          <div className="p-5 border-t border-gray-200 dark:border-gray-700">
+            <div className="mb-4 flex items-center gap-3">
+              <Flame className="h-5 w-5 text-blue-500" />
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">What Happened in This Transaction</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {receipt.logs.length} action{receipt.logs.length !== 1 ? "s were" : " was"} recorded
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {receipt.logs.map((log, idx) => {
+                const eventSig = log.topics[0];
+                if (!eventSig) return null;
+
+                const eventName = knownEvents[eventSig] || "Activity";
+                const from = log.topics[1] ? `0x${log.topics[1].slice(26)}` : null;
+                const to = log.topics[2] ? `0x${log.topics[2].slice(26)}` : null;
+                const tokenId = log.topics[3] ? BigInt(log.topics[3]).toString() : null;
+
+                return (
+                  <div key={idx} className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full p-2">
+                        <span className="block text-sm font-medium">{idx + 1}</span>
+                      </div>
+                      <div className="flex-1">
+                        {eventName === "Transfer" && from && to ? (
+                          <>
+                            <h4 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                              {from === "0x0000000000000000000000000000000000000000" ? (
+                                <>
+                                  <span className="text-green-500">🟢 Created</span>
+                                  {tokenId && <span>Token #{tokenId}</span>}
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-blue-500">🔄 Transferred</span>
+                                  {tokenId && <span>Token #{tokenId}</span>}
+                                </>
+                              )}
+                            </h4>
+                            <div className="mt-2 space-y-1 text-sm">
+                              {from !== "0x0000000000000000000000000000000000000000" && (
+                                <p>
+                                  From: <span className="font-mono text-xs">{from}</span>
+                                </p>
+                              )}
+                              <p>
+                                To: <span className="font-mono text-xs">{to}</span>
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <h4 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                              📦 {eventName.replace(/([A-Z])/g, " $1").trim()}
+                            </h4>
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                              This action involved the contract:
+                            </p>
+                            <p className="font-mono text-xs mt-1 break-all">{log.address}</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="flex items-start gap-2">
+                <span className="text-blue-500">ℹ️</span>
+                <div>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    These are automated records of what happened in the transaction.
+                  </p>
+                  <p className="text-xs mt-1 text-blue-600 dark:text-blue-400">
+                    Think of them like a receipt showing all the steps that occurred.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="p-5 space-y-3">
           <InfoRow label="Nonce" value={tx.nonce?.toString()} icon={<Hash className="h-4 w-4 text-gray-500" />} />

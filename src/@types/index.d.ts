@@ -46,6 +46,32 @@ export type ChainKey =
 
 type txInfo = TransactionResponse | null;
 
+// Add to your existing @/types
+export interface ContractInfo {
+  address: string;
+  name: string | null;
+  isContract: boolean;
+  tokenSymbol?: string | null;
+}
+
+export interface FunctionArg {
+  type: string;
+  value: string;
+}
+
+export interface FunctionInfo {
+  selector: string;
+  name: string | null;
+  args: FunctionArg[] | null;
+}
+
+export interface EnhancedTxDataResponse {
+  tx: ethers.TransactionResponse | null;
+  receipt: ethers.TransactionReceipt | null;
+  chain: ChainProps;
+  contractInfo: ContractInfo | null;
+  functionInfo: FunctionInfo | null;
+}
 interface TxDataResponse {
   tx: txInfo;
   receipt: TransactionReceipt | null;
